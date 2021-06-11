@@ -1,8 +1,10 @@
+import '../auth/auth_util.dart';
 import '../backend/backend.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -87,7 +89,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                   curve: Curves.ease,
                                 );
                               },
-                              text: 'Approval',
+                              text: 'Fostered',
                               options: FFButtonOptions(
                                 width: 190,
                                 height: 40,
@@ -136,152 +138,208 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 itemBuilder: (context, listViewIndex) {
                                   final listViewPostsRecord =
                                       listViewPostsRecordList[listViewIndex];
-                                  return Card(
-                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                    color: Color(0xFFF5F5F5),
-                                    elevation: 3,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        CachedNetworkImage(
-                                          imageUrl:
-                                              listViewPostsRecord.imageUrl,
-                                          width: double.infinity,
-                                          height: 180,
-                                          fit: BoxFit.cover,
+                                  return StreamBuilder<PostsRecord>(
+                                    stream: PostsRecord.getDocument(
+                                        listViewPostsRecord.reference),
+                                    builder: (context, snapshot) {
+                                      // Customize what your widget looks like when it's loading.
+                                      if (!snapshot.hasData) {
+                                        return Center(
+                                            child: CircularProgressIndicator());
+                                      }
+                                      final cardPostsRecord = snapshot.data;
+                                      return Card(
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        color: Color(0xFFF5F5F5),
+                                        elevation: 3,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              15, 15, 15, 25),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 10, 0, 0),
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      listViewPostsRecord.title,
-                                                      style: FlutterFlowTheme
-                                                          .bodyText1
-                                                          .override(
-                                                        fontFamily: 'Poppins',
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      listViewPostsRecord
-                                                          .priority,
-                                                      style: FlutterFlowTheme
-                                                          .bodyText1
-                                                          .override(
-                                                        fontFamily: 'Poppins',
-                                                        color: FlutterFlowTheme
-                                                            .secondaryColor,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              Align(
-                                                alignment: Alignment(-1, 0),
-                                                child: Text(
-                                                  listViewPostsRecord.location,
-                                                  style: FlutterFlowTheme
-                                                      .bodyText1
-                                                      .override(
-                                                    fontFamily: 'Poppins',
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 8, 0, 0),
-                                                child: Text(
-                                                  listViewPostsRecord
-                                                      .description,
-                                                  style: FlutterFlowTheme
-                                                      .bodyText1
-                                                      .override(
-                                                    fontFamily: 'Poppins',
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 15),
-                                              child: FFButtonWidget(
-                                                onPressed: () {
-                                                  print('Button pressed ...');
-                                                },
-                                                text: 'Validate',
-                                                options: FFButtonOptions(
-                                                  width: 130,
-                                                  height: 40,
-                                                  color: Color(0xFF3F9832),
-                                                  textStyle: FlutterFlowTheme
-                                                      .subtitle2
-                                                      .override(
-                                                    fontFamily: 'Poppins',
-                                                    color: Colors.white,
-                                                  ),
-                                                  borderSide: BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1,
-                                                  ),
-                                                  borderRadius: 12,
-                                                ),
-                                              ),
+                                            CachedNetworkImage(
+                                              imageUrl:
+                                                  listViewPostsRecord.imageUrl,
+                                              width: double.infinity,
+                                              height: 180,
+                                              fit: BoxFit.cover,
                                             ),
                                             Padding(
                                               padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 15),
-                                              child: FFButtonWidget(
-                                                onPressed: () {
-                                                  print('Button pressed ...');
-                                                },
-                                                text: 'Reject',
-                                                options: FFButtonOptions(
-                                                  width: 130,
-                                                  height: 40,
-                                                  color: Color(0xFFBB1F1F),
-                                                  textStyle: FlutterFlowTheme
-                                                      .subtitle2
-                                                      .override(
-                                                    fontFamily: 'Poppins',
-                                                    color: Colors.white,
+                                                  15, 15, 15, 25),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            0, 10, 0, 0),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        InkWell(
+                                                          onTap: () async {
+                                                            final isValidation =
+                                                                1;
+
+                                                            final postsRecordData =
+                                                                createPostsRecordData(
+                                                              isValidation:
+                                                                  isValidation,
+                                                            );
+
+                                                            await listViewPostsRecord
+                                                                .reference
+                                                                .update(
+                                                                    postsRecordData);
+                                                          },
+                                                          child: Text(
+                                                            listViewPostsRecord
+                                                                .title,
+                                                            style:
+                                                                FlutterFlowTheme
+                                                                    .bodyText1
+                                                                    .override(
+                                                              fontFamily:
+                                                                  'Poppins',
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          listViewPostsRecord
+                                                              .priority,
+                                                          style:
+                                                              FlutterFlowTheme
+                                                                  .bodyText1
+                                                                  .override(
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            color: FlutterFlowTheme
+                                                                .secondaryColor,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
-                                                  borderSide: BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1,
+                                                  Align(
+                                                    alignment: Alignment(-1, 0),
+                                                    child: Text(
+                                                      listViewPostsRecord
+                                                          .location,
+                                                      style: FlutterFlowTheme
+                                                          .bodyText1
+                                                          .override(
+                                                        fontFamily: 'Poppins',
+                                                      ),
+                                                    ),
                                                   ),
-                                                  borderRadius: 12,
-                                                ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            0, 8, 0, 0),
+                                                    child: Text(
+                                                      listViewPostsRecord
+                                                          .description,
+                                                      style: FlutterFlowTheme
+                                                          .bodyText1
+                                                          .override(
+                                                        fontFamily: 'Poppins',
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
                                               ),
+                                            ),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 15),
+                                                  child: FFButtonWidget(
+                                                    onPressed: () {
+                                                      print(
+                                                          'Button pressed ...');
+                                                    },
+                                                    text: 'Validate',
+                                                    options: FFButtonOptions(
+                                                      width: 130,
+                                                      height: 40,
+                                                      color: Color(0xFF3F9832),
+                                                      textStyle:
+                                                          FlutterFlowTheme
+                                                              .subtitle2
+                                                              .override(
+                                                        fontFamily: 'Poppins',
+                                                        color: Colors.white,
+                                                      ),
+                                                      borderSide: BorderSide(
+                                                        color:
+                                                            Colors.transparent,
+                                                        width: 1,
+                                                      ),
+                                                      borderRadius: 12,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 15),
+                                                  child: FFButtonWidget(
+                                                    onPressed: () async {
+                                                      final isValidation = -1;
+
+                                                      final postsRecordData =
+                                                          createPostsRecordData(
+                                                        isValidation:
+                                                            isValidation,
+                                                      );
+
+                                                      await listViewPostsRecord
+                                                          .reference
+                                                          .update(
+                                                              postsRecordData);
+                                                    },
+                                                    text: 'Reject',
+                                                    options: FFButtonOptions(
+                                                      width: 130,
+                                                      height: 40,
+                                                      color: Color(0xFFBB1F1F),
+                                                      textStyle:
+                                                          FlutterFlowTheme
+                                                              .subtitle2
+                                                              .override(
+                                                        fontFamily: 'Poppins',
+                                                        color: Colors.white,
+                                                      ),
+                                                      borderSide: BorderSide(
+                                                        color:
+                                                            Colors.transparent,
+                                                        width: 1,
+                                                      ),
+                                                      borderRadius: 12,
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
                                             )
                                           ],
-                                        )
-                                      ],
-                                    ),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               );
@@ -306,7 +364,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               },
                               text: 'Validation',
                               options: FFButtonOptions(
-                                width: 200,
+                                width: 190,
                                 height: 40,
                                 color: Color(0xFF898E97),
                                 textStyle: FlutterFlowTheme.subtitle2.override(
@@ -329,7 +387,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                   curve: Curves.ease,
                                 );
                               },
-                              text: 'Approval',
+                              text: 'Fostered',
                               options: FFButtonOptions(
                                 width: 190,
                                 height: 40,
@@ -466,40 +524,23 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                               padding: EdgeInsets.fromLTRB(
                                                   0, 0, 0, 15),
                                               child: FFButtonWidget(
-                                                onPressed: () {
-                                                  print('Button pressed ...');
+                                                onPressed: () async {
+                                                  final inProgress = 1;
+
+                                                  final postsRecordData =
+                                                      createPostsRecordData(
+                                                    inProgress: inProgress,
+                                                  );
+
+                                                  await listViewPostsRecord
+                                                      .reference
+                                                      .update(postsRecordData);
                                                 },
-                                                text: 'Approve',
+                                                text: 'Fostered',
                                                 options: FFButtonOptions(
                                                   width: 130,
                                                   height: 40,
                                                   color: Color(0xFF3F9832),
-                                                  textStyle: FlutterFlowTheme
-                                                      .subtitle2
-                                                      .override(
-                                                    fontFamily: 'Poppins',
-                                                    color: Colors.white,
-                                                  ),
-                                                  borderSide: BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1,
-                                                  ),
-                                                  borderRadius: 12,
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 15),
-                                              child: FFButtonWidget(
-                                                onPressed: () {
-                                                  print('Button pressed ...');
-                                                },
-                                                text: 'Reject',
-                                                options: FFButtonOptions(
-                                                  width: 130,
-                                                  height: 40,
-                                                  color: Color(0xFFBB1F1F),
                                                   textStyle: FlutterFlowTheme
                                                       .subtitle2
                                                       .override(
