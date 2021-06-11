@@ -431,134 +431,159 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 itemBuilder: (context, listViewIndex) {
                                   final listViewPostsRecord =
                                       listViewPostsRecordList[listViewIndex];
-                                  return Card(
-                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                    color: Color(0xFFF5F5F5),
-                                    elevation: 3,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Image.network(
-                                          listViewPostsRecord.imageUrl,
-                                          width: double.infinity,
-                                          height: 180,
-                                          fit: BoxFit.cover,
+                                  return StreamBuilder<PostsRecord>(
+                                    stream: PostsRecord.getDocument(
+                                        listViewPostsRecord.reference),
+                                    builder: (context, snapshot) {
+                                      // Customize what your widget looks like when it's loading.
+                                      if (!snapshot.hasData) {
+                                        return Center(
+                                            child: CircularProgressIndicator());
+                                      }
+                                      final cardPostsRecord = snapshot.data;
+                                      return Card(
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        color: Color(0xFFF5F5F5),
+                                        elevation: 3,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              15, 15, 15, 25),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 10, 0, 0),
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      listViewPostsRecord.title,
-                                                      style: FlutterFlowTheme
-                                                          .bodyText1
-                                                          .override(
-                                                        fontFamily: 'Poppins',
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      listViewPostsRecord
-                                                          .priority,
-                                                      style: FlutterFlowTheme
-                                                          .bodyText1
-                                                          .override(
-                                                        fontFamily: 'Poppins',
-                                                        color: FlutterFlowTheme
-                                                            .secondaryColor,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              Align(
-                                                alignment: Alignment(-1, 0),
-                                                child: Text(
-                                                  listViewPostsRecord.location,
-                                                  style: FlutterFlowTheme
-                                                      .bodyText1
-                                                      .override(
-                                                    fontFamily: 'Poppins',
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 8, 0, 0),
-                                                child: Text(
-                                                  listViewPostsRecord
-                                                      .description,
-                                                  style: FlutterFlowTheme
-                                                      .bodyText1
-                                                      .override(
-                                                    fontFamily: 'Poppins',
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
+                                            Image.network(
+                                              listViewPostsRecord.imageUrl,
+                                              width: double.infinity,
+                                              height: 180,
+                                              fit: BoxFit.cover,
+                                            ),
                                             Padding(
                                               padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 15),
-                                              child: FFButtonWidget(
-                                                onPressed: () async {
-                                                  final inProgress = 1;
-
-                                                  final postsRecordData =
-                                                      createPostsRecordData(
-                                                    inProgress: inProgress,
-                                                  );
-
-                                                  await listViewPostsRecord
-                                                      .reference
-                                                      .update(postsRecordData);
-                                                },
-                                                text: 'Fostered',
-                                                options: FFButtonOptions(
-                                                  width: 130,
-                                                  height: 40,
-                                                  color: Color(0xFF3F9832),
-                                                  textStyle: FlutterFlowTheme
-                                                      .subtitle2
-                                                      .override(
-                                                    fontFamily: 'Poppins',
-                                                    color: Colors.white,
+                                                  15, 15, 15, 25),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            0, 10, 0, 0),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          listViewPostsRecord
+                                                              .title,
+                                                          style:
+                                                              FlutterFlowTheme
+                                                                  .bodyText1
+                                                                  .override(
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          listViewPostsRecord
+                                                              .priority,
+                                                          style:
+                                                              FlutterFlowTheme
+                                                                  .bodyText1
+                                                                  .override(
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            color: FlutterFlowTheme
+                                                                .secondaryColor,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
-                                                  borderSide: BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1,
+                                                  Align(
+                                                    alignment: Alignment(-1, 0),
+                                                    child: Text(
+                                                      listViewPostsRecord
+                                                          .location,
+                                                      style: FlutterFlowTheme
+                                                          .bodyText1
+                                                          .override(
+                                                        fontFamily: 'Poppins',
+                                                      ),
+                                                    ),
                                                   ),
-                                                  borderRadius: 12,
-                                                ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            0, 8, 0, 0),
+                                                    child: Text(
+                                                      listViewPostsRecord
+                                                          .description,
+                                                      style: FlutterFlowTheme
+                                                          .bodyText1
+                                                          .override(
+                                                        fontFamily: 'Poppins',
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
                                               ),
+                                            ),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 15),
+                                                  child: FFButtonWidget(
+                                                    onPressed: () async {
+                                                      final inProgress = 1;
+
+                                                      final postsRecordData =
+                                                          createPostsRecordData(
+                                                        inProgress: inProgress,
+                                                      );
+
+                                                      await listViewPostsRecord
+                                                          .reference
+                                                          .update(
+                                                              postsRecordData);
+                                                    },
+                                                    text: 'Fostered',
+                                                    options: FFButtonOptions(
+                                                      width: 130,
+                                                      height: 40,
+                                                      color: Color(0xFF3F9832),
+                                                      textStyle:
+                                                          FlutterFlowTheme
+                                                              .subtitle2
+                                                              .override(
+                                                        fontFamily: 'Poppins',
+                                                        color: Colors.white,
+                                                      ),
+                                                      borderSide: BorderSide(
+                                                        color:
+                                                            Colors.transparent,
+                                                        width: 1,
+                                                      ),
+                                                      borderRadius: 12,
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
                                             )
                                           ],
-                                        )
-                                      ],
-                                    ),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               );
