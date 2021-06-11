@@ -110,12 +110,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         ),
                         Expanded(
                           child: StreamBuilder<List<PostsRecord>>(
-                            stream: queryPostsRecord(
-                              queryBuilder: (postsRecord) => postsRecord
-                                  .where('is_validation', isEqualTo: 0)
-                                  .orderBy('priority', descending: true)
-                                  .orderBy('created_at', descending: true),
-                            ),
+                            stream: queryPostsRecord(),
                             builder: (context, snapshot) {
                               // Customize what your widget looks like when it's loading.
                               if (!snapshot.hasData) {
@@ -184,36 +179,18 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        InkWell(
-                                                          onTap: () async {
-                                                            final isValidation =
-                                                                1;
-
-                                                            final postsRecordData =
-                                                                createPostsRecordData(
-                                                              isValidation:
-                                                                  isValidation,
-                                                            );
-
-                                                            await listViewPostsRecord
-                                                                .reference
-                                                                .update(
-                                                                    postsRecordData);
-                                                          },
-                                                          child: Text(
-                                                            listViewPostsRecord
-                                                                .title,
-                                                            style:
-                                                                FlutterFlowTheme
-                                                                    .bodyText1
-                                                                    .override(
-                                                              fontFamily:
-                                                                  'Poppins',
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                            ),
+                                                        Text(
+                                                          listViewPostsRecord
+                                                              .title,
+                                                          style:
+                                                              FlutterFlowTheme
+                                                                  .bodyText1
+                                                                  .override(
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w600,
                                                           ),
                                                         ),
                                                         Text(
