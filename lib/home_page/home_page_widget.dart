@@ -66,7 +66,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               },
                               text: 'Validation',
                               options: FFButtonOptions(
-                                width: 190,
+                                width: 160,
                                 height: 40,
                                 color: FlutterFlowTheme.primaryColor,
                                 textStyle: FlutterFlowTheme.subtitle2.override(
@@ -351,7 +351,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               },
                               text: 'Validation',
                               options: FFButtonOptions(
-                                width: 190,
+                                width: 160,
                                 height: 40,
                                 color: Color(0xFF898E97),
                                 textStyle: FlutterFlowTheme.subtitle2.override(
