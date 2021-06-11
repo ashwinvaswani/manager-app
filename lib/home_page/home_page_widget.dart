@@ -247,9 +247,19 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                   padding: EdgeInsets.fromLTRB(
                                                       0, 0, 0, 15),
                                                   child: FFButtonWidget(
-                                                    onPressed: () {
-                                                      print(
-                                                          'Button pressed ...');
+                                                    onPressed: () async {
+                                                      final isValidated = 1;
+
+                                                      final postsRecordData =
+                                                          createPostsRecordData(
+                                                        isValidated:
+                                                            isValidated,
+                                                      );
+
+                                                      await cardPostsRecord
+                                                          .reference
+                                                          .update(
+                                                              postsRecordData);
                                                     },
                                                     text: 'Validate',
                                                     options: FFButtonOptions(
@@ -277,12 +287,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                       0, 0, 0, 15),
                                                   child: FFButtonWidget(
                                                     onPressed: () async {
-                                                      final isValidation = -1;
+                                                      final isValidated = -1;
 
                                                       final postsRecordData =
                                                           createPostsRecordData(
-                                                        isValidation:
-                                                            isValidation,
+                                                        isValidated:
+                                                            isValidated,
                                                       );
 
                                                       await listViewPostsRecord

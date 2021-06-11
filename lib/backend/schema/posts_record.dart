@@ -35,16 +35,16 @@ abstract class PostsRecord implements Built<PostsRecord, PostsRecordBuilder> {
   Timestamp get createdAt;
 
   @nullable
-  @BuiltValueField(wireName: 'is_validation')
-  int get isValidation;
-
-  @nullable
   @BuiltValueField(wireName: 'in_progress')
   int get inProgress;
 
   @nullable
   @BuiltValueField(wireName: 'is_complete')
   int get isComplete;
+
+  @nullable
+  @BuiltValueField(wireName: 'is_validated')
+  int get isValidated;
 
   @nullable
   @BuiltValueField(wireName: kDocumentReferenceField)
@@ -56,9 +56,9 @@ abstract class PostsRecord implements Built<PostsRecord, PostsRecordBuilder> {
     ..priority = ''
     ..location = ''
     ..imageUrl = ''
-    ..isValidation = 0
     ..inProgress = 0
-    ..isComplete = 0;
+    ..isComplete = 0
+    ..isValidated = 0;
 
   static CollectionReference get collection =>
       FirebaseFirestore.instance.collection('posts');
@@ -80,9 +80,9 @@ Map<String, dynamic> createPostsRecordData({
   String imageUrl,
   DocumentReference user,
   Timestamp createdAt,
-  int isValidation,
   int inProgress,
   int isComplete,
+  int isValidated,
 }) =>
     serializers.serializeWith(
         PostsRecord.serializer,
@@ -94,9 +94,9 @@ Map<String, dynamic> createPostsRecordData({
           ..imageUrl = imageUrl
           ..user = user
           ..createdAt = createdAt
-          ..isValidation = isValidation
           ..inProgress = inProgress
-          ..isComplete = isComplete));
+          ..isComplete = isComplete
+          ..isValidated = isValidated));
 
 PostsRecord get dummyPostsRecord {
   final builder = PostsRecordBuilder()
@@ -106,9 +106,9 @@ PostsRecord get dummyPostsRecord {
     ..location = dummyString
     ..imageUrl = dummyImagePath
     ..createdAt = dummyTimestamp
-    ..isValidation = dummyInteger
     ..inProgress = dummyInteger
-    ..isComplete = dummyInteger;
+    ..isComplete = dummyInteger
+    ..isValidated = dummyInteger;
   return builder.build();
 }
 
