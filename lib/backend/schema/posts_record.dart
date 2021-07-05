@@ -1,10 +1,8 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
-import 'package:built_collection/built_collection.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
-import 'schema_util.dart';
+import 'index.dart';
 import 'serializers.dart';
+import 'package:built_value/built_value.dart';
 
 part 'posts_record.g.dart';
 
@@ -12,53 +10,53 @@ abstract class PostsRecord implements Built<PostsRecord, PostsRecordBuilder> {
   static Serializer<PostsRecord> get serializer => _$postsRecordSerializer;
 
   @nullable
-  String get title;
+  String get contact;
+
+  @nullable
+  String get date;
 
   @nullable
   String get description;
 
   @nullable
-  String get priority;
+  DateTime get firestoreTimestamp;
+
+  @nullable
+  bool get isValidated;
 
   @nullable
   String get location;
 
   @nullable
-  @BuiltValueField(wireName: 'image_url')
-  String get imageUrl;
+  String get name;
 
   @nullable
-  DocumentReference get user;
+  String get reporterAuthEmail;
 
   @nullable
-  @BuiltValueField(wireName: 'created_at')
-  Timestamp get createdAt;
+  int get status;
 
   @nullable
-  @BuiltValueField(wireName: 'in_progress')
-  int get inProgress;
+  int get urgency;
 
   @nullable
-  @BuiltValueField(wireName: 'is_complete')
-  int get isComplete;
-
-  @nullable
-  @BuiltValueField(wireName: 'is_validated')
-  int get isValidated;
+  BuiltList<String> get images;
 
   @nullable
   @BuiltValueField(wireName: kDocumentReferenceField)
   DocumentReference get reference;
 
   static void _initializeBuilder(PostsRecordBuilder builder) => builder
-    ..title = ''
+    ..contact = ''
+    ..date = ''
     ..description = ''
-    ..priority = ''
+    ..isValidated = false
     ..location = ''
-    ..imageUrl = ''
-    ..inProgress = 0
-    ..isComplete = 0
-    ..isValidated = 0;
+    ..name = ''
+    ..reporterAuthEmail = ''
+    ..status = 0
+    ..urgency = 0
+    ..images = ListBuilder();
 
   static CollectionReference get collection =>
       FirebaseFirestore.instance.collection('posts');
@@ -70,47 +68,36 @@ abstract class PostsRecord implements Built<PostsRecord, PostsRecordBuilder> {
   PostsRecord._();
   factory PostsRecord([void Function(PostsRecordBuilder) updates]) =
       _$PostsRecord;
+
+  static PostsRecord getDocumentFromData(
+          Map<String, dynamic> data, DocumentReference reference) =>
+      serializers.deserializeWith(
+          serializer, {...data, kDocumentReferenceField: reference});
 }
 
 Map<String, dynamic> createPostsRecordData({
-  String title,
+  String contact,
+  String date,
   String description,
-  String priority,
+  DateTime firestoreTimestamp,
+  bool isValidated,
   String location,
-  String imageUrl,
-  DocumentReference user,
-  Timestamp createdAt,
-  int inProgress,
-  int isComplete,
-  int isValidated,
+  String name,
+  String reporterAuthEmail,
+  int status,
+  int urgency,
 }) =>
-    serializers.serializeWith(
+    serializers.toFirestore(
         PostsRecord.serializer,
         PostsRecord((p) => p
-          ..title = title
+          ..contact = contact
+          ..date = date
           ..description = description
-          ..priority = priority
+          ..firestoreTimestamp = firestoreTimestamp
+          ..isValidated = isValidated
           ..location = location
-          ..imageUrl = imageUrl
-          ..user = user
-          ..createdAt = createdAt
-          ..inProgress = inProgress
-          ..isComplete = isComplete
-          ..isValidated = isValidated));
-
-PostsRecord get dummyPostsRecord {
-  final builder = PostsRecordBuilder()
-    ..title = dummyString
-    ..description = dummyString
-    ..priority = dummyString
-    ..location = dummyString
-    ..imageUrl = dummyImagePath
-    ..createdAt = dummyTimestamp
-    ..inProgress = dummyInteger
-    ..isComplete = dummyInteger
-    ..isValidated = dummyInteger;
-  return builder.build();
-}
-
-List<PostsRecord> createDummyPostsRecord({int count}) =>
-    List.generate(count, (_) => dummyPostsRecord);
+          ..name = name
+          ..reporterAuthEmail = reporterAuthEmail
+          ..status = status
+          ..urgency = urgency
+          ..images = null));

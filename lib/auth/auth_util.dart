@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -56,12 +57,20 @@ String get currentPhoneNumber => currentUser?.user?.phoneNumber ?? '';
 
 // Set when using phone verification (after phone number is provided).
 String _phoneAuthVerificationCode;
+// Set when using phone sign in in web mode (ignored otherwise).
+ConfirmationResult _webPhoneAuthConfirmationResult;
 
 Future beginPhoneAuth({
   BuildContext context,
   String phoneNumber,
   VoidCallback onCodeSent,
 }) async {
+  if (kIsWeb) {
+    _webPhoneAuthConfirmationResult =
+        await FirebaseAuth.instance.signInWithPhoneNumber(phoneNumber);
+    onCodeSent();
+    return;
+  }
   // If you'd like auto-verification, without the user having to enter the SMS
   // code manually. Follow these instructions:
   // * For Android: https://firebase.google.com/docs/auth/android/phone-auth?authuser=0#enable-app-verification (SafetyNet set up)
@@ -97,12 +106,17 @@ Future verifySmsCode({
   BuildContext context,
   String smsCode,
 }) async {
-  final authCredential = PhoneAuthProvider.credential(
-      verificationId: _phoneAuthVerificationCode, smsCode: smsCode);
-  return signInOrCreateAccount(
-    context,
-    () => FirebaseAuth.instance.signInWithCredential(authCredential),
-  );
+  if (kIsWeb) {
+    return signInOrCreateAccount(
+        context, () => _webPhoneAuthConfirmationResult.confirm(smsCode));
+  } else {
+    final authCredential = PhoneAuthProvider.credential(
+        verificationId: _phoneAuthVerificationCode, smsCode: smsCode);
+    return signInOrCreateAccount(
+      context,
+      () => FirebaseAuth.instance.signInWithCredential(authCredential),
+    );
+  }
 }
 
 DocumentReference get currentUserReference => currentUser?.user != null

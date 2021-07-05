@@ -1,10 +1,8 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
-import 'package:built_collection/built_collection.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
-import 'schema_util.dart';
+import 'index.dart';
 import 'serializers.dart';
+import 'package:built_value/built_value.dart';
 
 part 'users_record.g.dart';
 
@@ -27,7 +25,7 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
 
   @nullable
   @BuiltValueField(wireName: 'created_time')
-  Timestamp get createdTime;
+  DateTime get createdTime;
 
   @nullable
   @BuiltValueField(wireName: 'phone_number')
@@ -54,6 +52,11 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
   UsersRecord._();
   factory UsersRecord([void Function(UsersRecordBuilder) updates]) =
       _$UsersRecord;
+
+  static UsersRecord getDocumentFromData(
+          Map<String, dynamic> data, DocumentReference reference) =>
+      serializers.deserializeWith(
+          serializer, {...data, kDocumentReferenceField: reference});
 }
 
 Map<String, dynamic> createUsersRecordData({
@@ -61,10 +64,10 @@ Map<String, dynamic> createUsersRecordData({
   String displayName,
   String photoUrl,
   String uid,
-  Timestamp createdTime,
+  DateTime createdTime,
   String phoneNumber,
 }) =>
-    serializers.serializeWith(
+    serializers.toFirestore(
         UsersRecord.serializer,
         UsersRecord((u) => u
           ..email = email
@@ -73,17 +76,3 @@ Map<String, dynamic> createUsersRecordData({
           ..uid = uid
           ..createdTime = createdTime
           ..phoneNumber = phoneNumber));
-
-UsersRecord get dummyUsersRecord {
-  final builder = UsersRecordBuilder()
-    ..email = dummyString
-    ..displayName = dummyString
-    ..photoUrl = dummyImagePath
-    ..uid = dummyString
-    ..createdTime = dummyTimestamp
-    ..phoneNumber = dummyString;
-  return builder.build();
-}
-
-List<UsersRecord> createDummyUsersRecord({int count}) =>
-    List.generate(count, (_) => dummyUsersRecord);

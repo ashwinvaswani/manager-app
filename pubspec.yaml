@@ -31,7 +31,8 @@ dependencies:
   firebase_auth: ^0.20.0+1
   firebase_core: ^0.7.0
   font_awesome_flutter:
-  google_fonts:
+  geolocator:
+  google_fonts: ^1.1.2
   google_sign_in: ^4.0.16
   intl:
   json_serializable: ^3.5.1
